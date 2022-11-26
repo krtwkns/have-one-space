@@ -1,0 +1,226 @@
+---
+title: Think Functionally and Become Functional in Javascript
+date: '2020-07-24'
+tags: ['javascript']
+draft: false
+summary: The main advantage of using Functional Programming is that Functional Programming is very effective in reducing program complexity by decomposition (breaking the program into small pieces) and composition (combining the pieces back together).
+---
+
+# Functional Programming?
+
+Nowadays, Functional Programming becomes one thing that must be known, especially by javascript ninja. There are engineers who have only listened about that, or even not aware have been used the concept of Functional Programming. So, What is Functional Programming? In short, Functional Programming is a programming paradigm where programs are constructed by applying and composing functions. You can apply Functional Programming on client-side (browser-based) or on server-side (ex: nodejs).
+
+## Fundamental Concept of Functional Programming
+
+Before I explain more deeply about Functional Programming, We must know about fundamental concept of Functional Programming consist of Declarative Programming, Pure Function, Referential Transparency and Immutability.
+
+### Declarative Programming
+
+Declarative Programming is a programming paradigm that expresses logic of computation without describing the flow of control that logic. Declarative Programming is opposite of Imperative Programming, the difference can be explained in the following examples in real world case "Dental Treatment Process":
+
+- Imperative:
+
+  1. Go to dentist
+  2. Register for treatment
+  3. Dentist examines the teeth
+  4. Dentist gives a diagnosis
+  5. Dentist gives a medicine receipt
+  6. You buy the medicine
+
+- Declarative:
+
+  Check my teeth, please (dentist will check your teeth, gives a diagnosis, and gives a medicine receipt) and then you will buy the medicine based on medicine receipt.
+
+### Pure Function
+
+Basically, a function is called a pure function, if it has :
+
+- Function that depends only on the input given in the parameter.
+- Function that do not cause changes outside their scope, such as changing global variables.
+
+Function that do not meet these two criteria are said to be Impure Function. For more details, here are two examples of pure function and impure function
+
+- Pure Function
+
+  ```js
+  function sum(a, b) {
+    return a + b
+  }
+  ```
+
+- Impure Function
+
+  ```js
+  let a = 0
+  let b = 2
+  function sum() {
+    return a + b
+  }
+  ```
+
+### Referential Transparency
+
+Function is said to be referential transparency if a function returns a return that is always the same if given the same input. For example the function below :
+
+```js
+var counter = 0
+function increment() {
+  return ++counter
+}
+```
+
+The above function is not said to be referential transparency, to make it referential transparent, you need to eliminate the dependent state and include it in the function parameter input. You can also convert it to ES6 lambda form:
+
+```js
+var increment = (counter) => counter + 1
+```
+
+### Immutability
+
+Immutable data is data that cannot be changed after it is created. In Javascript, like other languages, all primitive types (String, Number and others) are immutable.
+
+```js
+var statement = “I am an immutable value”
+var otherStr = statement.slice(8, 17)
+```
+
+In fact, there are no string method that changes the strings they operate, they all return new strings. The reason is strings cannot be changed, they cannot change, we can only create new strings.
+
+## Function in Javascript
+
+After understanding the fundamental concepts of Functional Programming, the next one is about function. In Functional Programming, function is the main unit. Function can produce computational results or undefined (void function). In javascript, function has 2 main characteristics, Function as first-class and Higher-order function
+
+### Function as first-class
+
+Programming languages are said to be First-class functions when functions can be treated as variables, example :
+
+- Assigned to variable
+  ```js
+  const myFn = function () {
+    // do something
+  }
+  ```
+- Function that are treated as argument of other function
+  ```js
+  function fnRun(fn, x, y) {
+    return fn(x + y)
+  }
+  ```
+- Function that are returned by other function
+  ```js
+  function takeFirst(fn, fn2) {
+    return fn
+  }
+  ```
+- Function that are used as properties of object
+  ```js
+  var obj = {
+    method: function (x) { return x \* x; }
+  };
+  ```
+
+### Higher-order function
+
+Because function can be treated like ordinary objects, function can be entered as arguments and returned from other function. This is called the Higher-order function. Following is an example of applying the higher-order function
+
+```js
+function applyOperation(a, b, opt) {
+  return opt(a, b)
+}
+var multiplier = (a, b) => a * b
+applyOperation(2, 3, multiplier) // -> 6
+```
+
+# Get Functional
+
+After explaining the basic concepts that exist in functional programming and function in javascript, here some implementations of functional programming in javascript
+
+## Transforming Data (map, filter, reduce)
+
+### map()
+
+map() gives a callback once for each element in the array and creates a new Array as a result
+
+```js
+const foods = ['Sate', 'Gule', 'Rawon']
+const greatFoods = names.map(function (name) {
+  return 'Nasi' + name
+})
+console.log(greetNames) // [‘Nasi Sate', 'Nasi Gule', 'Nasi Rawon']
+```
+
+### filter()
+
+filter() is a function that creates a new array by passing all the elements that pass all the tests that exist in the function.
+
+```js
+const words = ['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present']
+const longWords = words.filter((word) => word.length > 6)
+// longWords is ["exuberant", "destruction", "present"]
+```
+
+### reduce()
+
+reduce() is an accumulator function and every element in the array (from left to right) to make it a single value.
+
+```js
+const total = [0, 1, 2, 3].reduce((sum, value) => sum + value, 1)
+// total is 7
+```
+
+## Implement transformation of data to solve factorial and find the longest one
+
+### Faktorial
+
+- Factorial with looping:
+
+  ```js
+  function factorial(n) {
+    var result = 1
+    for (var i = 1; i <= n; ++i) result *= i
+    return result
+  }
+  ```
+
+- Factorial with apply dan reduce:
+
+  ```js
+  function factorial(n) {
+    return Array.apply(0, Array(n)).reduce(function (sum, value, index) {
+      return sum + sum * index
+    }, 1)
+  }
+  ```
+
+### Find the longest one
+
+- Find the longest one with looping:
+
+  ```js
+  function findLongest(array) {
+    var longest = ''
+    for (var i = 0; i < array.length; ++i) {
+      if (array[i].length > longest.length) {
+        longest = array[i]
+      }
+    }
+    return longest
+  }
+  findLongest(['sate', 'martabak', 'bakso']) //martabak
+  ```
+
+- Find the longest one with reduce:
+
+  ```js
+  function findLongest(array) {
+    return array.reduce(function (longest, entry) {
+      return entry.length > longest.length ? entry : longest
+    })
+  }
+
+  findLongest(['sate', 'martabak', 'bakso']) //martabak
+  ```
+
+# Conclusion
+
+The main advantage of using Functional Programming is that Functional Programming is very effective in reducing program complexity by decomposition (breaking the program into small pieces) and composition (combining the pieces back together).
