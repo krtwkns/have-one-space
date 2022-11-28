@@ -1,0 +1,79 @@
+---
+title: Binary Search Algorithm
+date: '2022-11-28'
+tags: ['algorithm', 'javascript']
+draft: false
+summary: Binary Search is a searching algorithm used in a sorted array by repeatedly dividing the search interval in half.
+---
+
+# Definition
+
+- Its input is `a sorted array` and `target`
+
+- It works by `repeatedly dividing the search interval in half`
+
+- It can be implemented by `Iterative Method` or `Recursion Method`
+
+- If an element you're looking for is in that list, binary search returns the position where it's located. Otherwise, binary search returns null or -1 or etc depends on question's rule.
+
+## Code in Action
+
+### Javscript
+
+```js
+// Iteration Method
+
+const binarySearch = (arr, target) => {
+  let low = 0
+  let high = arr.length - 1
+  while (low <= high) {
+    let mid = Math.floor((low + high) / 2)
+    let temp = arr[mid]
+
+    if (temp == target) {
+      return mid
+    }
+
+    if (temp > target) {
+      high = mid - 1
+    }
+
+    if (temp < target) {
+      low = mid + 1
+    }
+  }
+
+  return null // or return -1
+}
+```
+
+```js
+// Recursion Method
+
+const binarySearch = (arr, left, right, target) => {
+  if (right >= left) {
+    let mid = Math.floor((right + left) / 2)
+
+    if (arr[mid] === target) {
+      return mid
+    }
+
+    if (arr[mid] > target) {
+      return binarySearch(arr, left, mid - 1, target)
+    }
+
+    return binarySearch(arr, mid + 1, right, target)
+  }
+
+  return null // or return -1
+}
+```
+
+## List of Exercise with Binary Search Topic
+
+- <a href="https://leetcode.com/problems/binary-search/" target="__blank">
+    704 - Binary Search (LeetCode)
+  </a>
+- <a href="https://leetcode.com/problems/missing-number/" target="__blank">
+    268 - Missing Number (LeetCode)
+  </a>
