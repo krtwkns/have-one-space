@@ -1,0 +1,79 @@
+---
+title: Calculate Fibonacci Number using Caching
+date: '2023-2-18'
+tags: ['algorithm', 'javascript']
+draft: false
+summary: Binary Search is a searching algorithm used in a sorted array by repeatedly dividing the search interval in half.
+---
+
+# Background
+
+Fibonacci sequence, the sequence of numbers 1, 1, 2, 3, 5, 8, 13, 21, …, each of which, after the second, is the sum of the two previous numbers. The next number is found by adding up the two numbers before it:
+
+- the 2 is found by adding the two numbers before it (1+1),
+- the 3 is found by adding the two numbers before it (1+2),
+- the 5 is (2+3),
+- and so on!
+
+# Code in Action
+
+There are several step to implement fibonacci using cache in javascript language
+
+## 1. Use Recursion
+
+First step, create function, let's say the function name is `calculateFib`. After create the function, add calculate variable and sum calculation like this:
+
+```js
+function calculateFib(n) {
+  let calculate = calculateFib(n - 2) + calculateFib(n - 1)
+}
+```
+
+You need add if statement to handle calculation if the n value is 0 and below or equal 2
+
+```js
+function calculateFib(n) {
+  if (n == 0) return 0
+  if (n <= 2) {
+    return 1
+  }
+  let calculate = calculateFib(n - 2) + calculateFib(n - 1)
+}
+
+console.log(calculateFib(7)) //13
+console.log(calculateFib(14)) //377
+```
+
+After you add handle if statement, the function will return fibonacci calculation with n position based on parameter. For the example if you fill n parameter with 7 the result is 13 and if you fill n parameter with 14 the result is 377. But.. how about the proformance? that code will take long time if the n position is 100, or 1000.
+
+So, you can add caching methodology to improve the performance.
+
+## 2. Improve Performance with Caching
+
+> Background: Caching -- pronounced "cashing" -- is the process of storing data in a cache, which is a temporary storage area that facilitates faster access to data with the goal of improving application and system performance.
+
+You can write your own caching code. For the example, for this case you can use object to temporary store from our calculations. For the first, you can create `cache` variable to store the object with `key: value`. After that, you can check from our cache variable before you calculate fibonacci n position, if cache object have the value, just take it and if the cache object don't have the value, just calculate and store n position calculation to cache object variable.
+
+```js
+let cache = {}
+// key: value
+
+function calculateFib(n) {
+  if (cache[n]) {
+    return cache[n]
+  }
+
+  if (n == 0) return 0
+  if (n <= 2) {
+    return 1
+  }
+  let calculate = calculateFib(n - 2) + calculateFib(n - 1)
+
+  cache[n] = calculate
+  return calculate
+}
+
+console.log(calculateFib(100)) //354224848179262000000
+```
+
+After you implement this caching, I can guarantee that your code performance is improve. Don't worry to get calculate fibonnaci of `n = 1000`, your code will run and return the result much faster than before.
