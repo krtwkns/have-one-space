@@ -7,6 +7,7 @@ import 'katex/dist/katex.css'
 import { ThemeProvider } from 'next-themes'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { GoogleAnalytics } from 'nextjs-google-analytics'
 
 import siteMetadata from '@/data/siteMetadata'
 import { Analytics } from 'pliny/analytics'
@@ -15,16 +16,18 @@ import LayoutWrapper from '@/components/LayoutWrapper'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
-      <Head>
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-      </Head>
-      <Analytics analyticsConfig={siteMetadata.analytics} />
-      <LayoutWrapper>
-        <SearchProvider searchConfig={siteMetadata.search}>
-          <Component {...pageProps} />
-        </SearchProvider>
-      </LayoutWrapper>
-    </ThemeProvider>
+    <>
+      <GoogleAnalytics trackPageViews />
+      <ThemeProvider attribute="class" defaultTheme={siteMetadata.theme}>
+        <Head>
+          <meta content="width=device-width, initial-scale=1" name="viewport" />
+        </Head>
+        <LayoutWrapper>
+          <SearchProvider searchConfig={siteMetadata.search}>
+            <Component {...pageProps} />
+          </SearchProvider>
+        </LayoutWrapper>
+      </ThemeProvider>
+    </>
   )
 }
