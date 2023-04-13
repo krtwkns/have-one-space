@@ -1,0 +1,109 @@
+---
+title: Solving Problem Google s 4 is being blocked by Content Security Policy in Nextjs
+date: '2023-4-13'
+tags: ['nextjs', 'analytics']
+draft: false
+summary: When I do integration Google Analytics 4 (GA4) in my project which use Nextjs, I am facing one problem. The problem is I got error related with Content Security Policy. The solution is adding several security configurations in next.config.js file.
+---
+
+# Background of the Problem
+
+When I do integration Google Analytics 4 (GA4) in my project which uses Nextjs, I am facing one problem. The problem is I got an error related to Content Security Policy. The error is like this:
+
+![error-console](/static/images/solving-problem-ga4/error-console.png)
+
+Although I can call dataLayer variable from the browser console and see that property
+
+![datalayer](/static/images/solving-problem-ga4/datalayer.png)
+
+But, the user activity never stored in Google Analytics Dashboard.
+
+# Solution
+
+In Nextjs [documentation related with security headers](https://nextjs.org/docs/advanced-features/security-headers) in Content-Security-Policy section.
+
+As in the documentation:
+
+> This header helps prevent cross-site scripting (XSS), clickjacking and other code injection attacks. Content Security Policy (CSP) can specify allowed origins for content including scripts, stylesheets, images, fonts, objects, media >(audio, video), iframes, and more.
+
+So, you can add Content Security Policy directives using a template string like this one:
+
+```js
+const ContentSecurityPolicy = `
+    default-src 'self';
+    script-src 'self';
+    child-src example.com;
+    style-src 'self' example.com;
+    font-src 'self';
+`
+```
+
+But in that configuration, you need to replace `script-src 'self';` with ` script-src 'self' 'unsafe-eval' 'unsafe-inline' _.googletagmanager.com _.google-analytics.com;` to solve the problem. Then, the ContentSecurityPolicy constant is like this:
+
+```js
+const ContentSecurityPolicy = `
+    default-src 'self';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' *.googletagmanager.com *.google-analytics.com;
+    child-src example.com;
+    style-src 'self' example.com;
+    font-src 'self';
+`
+```
+
+And create `securityHeaders` array object and call `ContentSecurityPolicy` variable
+
+```js
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
+  },
+]
+```
+
+And then call `securityHeaders` in `async headers()` function and export it
+
+```js
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ]
+  },
+}
+```
+
+# Conclusion
+
+So, here is the complete configuration in next.config.js file:
+
+```js
+const ContentSecurityPolicy = `
+  default-src 'self';
+	script-src 'self' 'unsafe-eval' 'unsafe-inline' *.googletagmanager.com *.google-analytics.com;
+  child-src example.com;
+  style-src 'self' example.com;
+  font-src 'self';
+`
+
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
+  },
+]
+
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: securityHeaders,
+      },
+    ]
+  },
+}
+```
